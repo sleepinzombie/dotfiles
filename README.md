@@ -14,4 +14,6 @@ As developers, we often find ourselves customizing our development environments 
 
 ## Included Settings
 
+- [VS Code Extensions](vscode/README.md)
+
 ## Usage
