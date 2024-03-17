@@ -7,8 +7,13 @@ To be able to use the `settings.json`, make sure to install the prerequisites ex
 
 - [Extensions](#extensions)
 - [Fonts](#fonts)
+- [Installing Extensions](#installation-of-extensions)
 
 ## Extensions
+
+Below is a list of the required extensions that have to be installed to prevent errors when using the `settings.json`.
+
+Instructions on how to install these extensions directly using a command is shared [below](#installation-of-extensions).
 
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) - Integrates ESLint JavaScript into VS Code.
 - [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) - Code formatter using Prettier.
@@ -19,5 +24,24 @@ To be able to use the `settings.json`, make sure to install the prerequisites ex
 
 ## Fonts
 
+Below is a list of the required fonts that have to be installed to prevent errors when using the `settings.json`.
+
 - [Cascadia Code](https://github.com/microsoft/cascadia-code)
 - [Fire Code](https://github.com/tonsky/FiraCode)
+
+## Installation of Extensions
+
+Make sure that we are in the right directory before running the below command.
+The command will go through each extension in the list and install one by one.
+
+### Linux and macOS
+
+```
+cat extensions.txt | xargs -n 1 code --install-extension
+```
+
+### Windows (using PowerShell)
+
+```
+Get-Content extensions.txt | ForEach-Object { code --install-extension $_ }
+```
