@@ -29,7 +29,7 @@ To execute the script, adhere to the following steps:
 
 ### Windows
 
-1. Make sure you have Git for Windows installed on your system.
+1. Make sure you have [Git for Windows](https://git-scm.com/download/win) installed on your system.
 2. Ensure the `git-setup.sh` file is downloaded onto your system, preferably within the `C:\Users\YourUsername` directory.
 3. Modify the credentials within the `git-setup.sh` file to align with your own.
 4. Open Git Bash terminal.
