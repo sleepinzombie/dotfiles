@@ -26,6 +26,12 @@ cd dotfiles/git
 
 #### 2. Configure Git Credentials
 
+Copy the `gitconfig.env.example` file and create your own `gitconfig.env` file:
+
+```
+cp gitconfig.env.example gitconfig.env
+```
+
 Edit the gitconfig.env file with your Git credentials using a text editor of your choice:
 
 ```
