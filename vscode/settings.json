@@ -8,6 +8,21 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "apc.electron": {
+    "vibrancy": "ultra-dark",
+    "frame": true,
+    "backgroundColor": "#2A2E3D",
+    "transparent": true,
+    "trafficLightPosition": {
+      "x": 15,
+      "y": 13
+    }
+  },
+  "apc.stylesheet": {
+    "*": "font-family: 'Cascadia code','Fira Code', Consolas, 'Courier New', monospace",
+    ".editor .title": "background-color: transparent !important;",
+    ".editor .title .actions-container": "flex-direction: row-reverse;"
+  },
   "diffEditor.experimental.showMoves": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
   "diffEditor.ignoreTrimWhitespace": false,

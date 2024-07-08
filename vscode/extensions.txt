@@ -4,6 +4,7 @@ bradlc.vscode-tailwindcss
 burkeholland.simple-react-snippets
 chakrounanas.turbo-console-log
 dbaeumer.vscode-eslint
+drcika.apc-extension
 eamodio.gitlens
 esbenp.prettier-vscode
 felipe.nasc-touchbar
