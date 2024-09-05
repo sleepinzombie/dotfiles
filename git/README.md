@@ -13,6 +13,13 @@ To establish specific configurations such as name, email, and other Git-related 
 
 To obviate such occurrences, a script named `git-setup.sh` has been devised to streamline this process automatically.
 
+### `git-setup.sh` Script Details
+
+The `git-setup.sh` script has been enhanced to:
+
+- Conditionally Include Configurations: The script now dynamically includes configurations for `SIGNINGKEY` and `GPG_COMMIT` only if their respective environment variables are set in the `gitconfig.env` file.
+- Remove Empty Lines: After processing, the script removes empty lines to ensure a clean and readable output.
+
 ## Usage
 
 #### 1. Clone the Repository
@@ -32,7 +39,7 @@ Copy the `gitconfig.env.example` file and create your own `gitconfig.env` file:
 cp gitconfig.env.example gitconfig.env
 ```
 
-Edit the gitconfig.env file with your Git credentials using a text editor of your choice:
+Edit the `gitconfig.env` file with your Git credentials using a text editor of your choice:
 
 ```
 nano gitconfig.env
@@ -43,6 +50,8 @@ Update the following keys with your details:
 ```
 USERNAME="Your Name"
 EMAIL="your.email@example.com"
+SIGNINGKEY="Your signing key"  # Optional: Include if you use a signing key
+GPG_COMMIT="true"  # Optional: Set to true or false if you want to enable/disable commit signing
 ```
 
 Save and close the file.

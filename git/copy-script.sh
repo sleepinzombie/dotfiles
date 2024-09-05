@@ -28,14 +28,44 @@ fi
 
 # Create a temporary script with environment variables set
 TEMP_SCRIPT="temp_$SCRIPT_NAME"
-sed "s/PLACEHOLDER_USERNAME/$USERNAME/; s/PLACEHOLDER_EMAIL/$EMAIL/" "$SCRIPT_NAME" > "$TEMP_SCRIPT"
 
-# Determine the home directory based on the OS
-if [ "$OS" == "Windows_NT" ]; then
-  HOME_DIR="$HOME"
+# Copy the base script to the temporary file
+cp "$SCRIPT_NAME" "$TEMP_SCRIPT"
+
+# Function to apply sed commands with compatibility for both GNU and BSD sed
+apply_sed() {
+  local file="$1"
+  local pattern="$2"
+  local replacement="$3"
+  if sed --version >/dev/null 2>&1; then
+    # GNU sed
+    sed -i "s/$pattern/$replacement/g" "$file"
+  else
+    # BSD sed (macOS)
+    sed -i '' "s/$pattern/$replacement/g" "$file"
+  fi
+}
+
+# Replace placeholders with environment variable values
+apply_sed "$TEMP_SCRIPT" "PLACEHOLDER_USERNAME" "$USERNAME"
+apply_sed "$TEMP_SCRIPT" "PLACEHOLDER_EMAIL" "$EMAIL"
+
+# Conditionally add signing key configuration if set
+if [ -n "$SIGNINGKEY" ]; then
+  apply_sed "$TEMP_SCRIPT" "PLACEHOLDER_SIGNINGKEY" "$SIGNINGKEY"
 else
-  HOME_DIR="$HOME"
+  sed -i '' "/#SIGNINGKEY_CONFIG_START/,/#SIGNINGKEY_CONFIG_END/ d" "$TEMP_SCRIPT"
 fi
+
+# Conditionally add GPG commit signing configuration if set
+if [ -n "$GPG_COMMIT" ]; then
+  apply_sed "$TEMP_SCRIPT" "PLACEHOLDER_GPG_COMMIT" "$GPG_COMMIT"
+else
+  sed -i '' "/#GPG_COMMIT_CONFIG_START/,/#GPG_COMMIT_CONFIG_END/ d" "$TEMP_SCRIPT"
+fi
+
+# Determine the home directory (works for Unix-based systems)
+HOME_DIR="$HOME"
 
 # Copy the updated script to the home directory
 cp "$TEMP_SCRIPT" "$HOME_DIR/$SCRIPT_NAME"
