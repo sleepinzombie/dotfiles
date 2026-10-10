@@ -6,6 +6,7 @@ This directory contains all settings and configurations that are related to the 
 
 - [Git Configurations Setup](#git-configurations-setup)
 - [Usage](#usage)
+- [Sync a Fork with its Upstream](#sync-a-fork-with-its-upstream)
 
 ## Git Configurations Setup
 
@@ -78,3 +79,22 @@ Finally, run the git-setup.sh script in the home directory to set up your Git cr
 ```
 
 Once this setup is completed, you can simply run `git-setup.sh` from any repository to configure Git credentials quickly.
+
+## Sync a Fork with its Upstream
+
+`git-sync-fork.sh` syncs the fork of the repository **in your current directory** with its upstream, so only that repository is affected. It is installed as `git-sync-fork` (also usable as `git sync-fork`) by the root `setup.sh` / `setup.ps1`, which also install the required `gh` CLI.
+
+```
+git-sync-fork [--pull] [--checkout] [--branch <name>] [--remote <name>] [--dry-run]
+```
+
+| Option | Effect |
+| --- | --- |
+| _(none)_ | Sync the fork's default branch on GitHub |
+| `--pull` | Then update the local branch from the fork remote |
+| `--checkout` | Switch to the branch first (implies `--pull`); refuses if the working tree is dirty |
+| `--branch <name>` | Sync this branch instead of the default |
+| `--remote <name>` | Remote that points to your fork (default: `origin`). The upstream is discovered from GitHub, so an extra `upstream` remote is not needed or used |
+| `--dry-run` | Print the commands without running them |
+
+Syncing is fast-forward only. It never force-updates or discards local work, and fails if the fork has diverged from upstream. It exits with an error if the repository is not a fork.
