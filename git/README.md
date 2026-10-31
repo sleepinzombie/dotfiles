@@ -101,29 +101,56 @@ Syncing is fast-forward only. It never force-updates or discards local work, and
 
 ## Prune Stale Local Branches
 
-`git-prune-branches` (installed by `setup.sh` / `setup.ps1`, also usable as `git prune-branches`) deletes local branches in the **current repository** that are no longer needed:
+`git-prune-branches` reviews and optionally deletes stale local branches in the **current repository**. It is installed as `git-prune-branches` (also usable as `git prune-branches`) by the root `setup.sh` / `setup.ps1`.
 
-| Reason | Meaning |
+```
+git-prune-branches [--dry-run] [-y | --yes] [--remote <name>] [--upstream <name>]
+                   [--protect <pattern>] [--no-fetch] [--no-pr] [--no-backup]
+git-prune-branches --list-backups
+git-prune-branches --restore <branch>
+git-prune-branches --purge-backups [--older-than <days>] [--gc]
+```
+
+| Option | Effect |
 | --- | --- |
-| `merged` | Tip is contained in `<remote>/<default>` or `upstream/<default>` |
-| `merged-pr` | A merged PR (squash/rebase included) has the branch as head, and the local tip is covered by it |
-| `remote-gone` | The tracked remote branch was deleted |
-| `pr-closed` | The branch's PR was closed unmerged (GitHub cannot truly delete PRs) |
-
-Safety: run with `--dry-run` first; deletion asks for confirmation unless `--yes`. It never touches the current branch, the default branch, branches checked out in a worktree, `main/master/develop/dev/trunk/release/*` (add more with `--protect`), branches with an open PR, or branches with commits newer than their closed/merged PR. Each tip is backed up under `refs/prune-backup/<timestamp>/<branch>` first (about 41 bytes per branch; it keeps the commits from garbage collection), and deletions are logged to `.git/prune-branches.log`.
+| `--dry-run` | Show candidates without changing anything |
+| `-y`, `--yes` | Delete without prompting; otherwise deletion requires an interactive confirmation |
+| `--remote <name>` | Fork or primary remote (default: `origin`) |
+| `--upstream <name>` | Upstream remote to check in addition to the primary remote when it exists (default: `upstream`) |
+| `--protect <pattern>` | Add a shell-style branch-name pattern to the protected branches; repeatable |
+| `--no-fetch` | Skip `git fetch --prune`; remote-tracking data may be stale, so deleted remote branches might not be detected |
+| `--no-pr` | Skip GitHub PR checks; squash/rebase merges and closed PRs may not be detected |
+| `--no-backup` | Do not create backup refs before deleting branches (not recommended) |
+| `--list-backups` | List saved branch tips and exit |
+| `--restore <branch>` | Recreate the branch from its most recent backup and exit; fails if the local branch already exists |
+| `--purge-backups` | Delete backup refs after confirmation (or with `--yes`); combine with `--older-than` to select older backups |
+| `--older-than <days>` | With `--purge-backups`, only select backups at least this many days old |
+| `--gc` | With `--purge-backups`, immediately prune unreachable Git objects; irreversible and may also remove other unreachable objects |
 
 ```
 git-prune-branches --dry-run
+git-prune-branches --yes
+```
+
+Branches are candidates when their tip is contained in the default branch of the primary or upstream remote (`merged`), a merged PR covers the local tip (`merged-pr`), the tracked remote branch is gone (`remote-gone`), or a PR was closed without merging and covers the local tip (`pr-closed`). GitHub PR checks require an authenticated `gh` CLI; if unavailable or unauthenticated, the script warns and skips those checks. By default, it fetches with pruning first and refuses to continue if fetching fails.
+
+The current branch, the default branch, branches checked out in any worktree, `main`, `master`, `develop`, `dev`, `trunk`, and `release/*` are always protected. Branches with an open PR are kept, as are branches whose commits are newer than their closed or merged PR. Review the candidates with `--dry-run` before deletion.
+
+Before deleting a candidate, the script saves its tip under `refs/prune-backup/<timestamp>/<branch>` (the ref itself uses about 41 bytes and keeps the commit objects from garbage collection). Backups remain in the local repository's `.git` directory until purged; deletion details are appended to `.git/prune-branches.log`.
+
+For example, list and restore a backup:
+
+```
 git-prune-branches --list-backups
-git-prune-branches --restore <branch>
+git-prune-branches --restore feature/my-branch
 ```
 
-Backups are kept until you purge them:
+Purge previews and removes backups as follows:
 
 ```
-git-prune-branches --purge-backups --dry-run          # preview
-git-prune-branches --purge-backups --older-than 30    # only backups 30+ days old
-git-prune-branches --purge-backups --gc               # all, and physically remove the commits now
+git-prune-branches --purge-backups --dry-run
+git-prune-branches --purge-backups --older-than 30
+git-prune-branches --purge-backups --gc
 ```
 
-Without `--gc`, the commits remain recoverable with `git fsck --unreachable` until git's normal garbage collection prunes them. `--gc` runs `git reflog expire --expire-unreachable=now --all` and `git gc --prune=now`, which also discards any other unreachable objects in the repo, so it is irreversible.
+Without `--gc`, purging removes the refs but the commits remain recoverable with `git fsck --unreachable` until normal garbage collection prunes them. With `--gc`, the script runs `git reflog expire --expire-unreachable=now --all` and `git gc --prune=now`; this is irreversible and can also remove any other unreachable objects in the repository.

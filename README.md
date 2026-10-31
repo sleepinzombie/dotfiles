@@ -41,3 +41,13 @@ git-sync-fork --checkout   # ...switch to the default branch first (implies --pu
 ```
 
 See [Git Settings & Configurations](git/README.md#sync-a-fork-with-its-upstream) for details.
+
+### 3. Prune stale local branches
+
+From inside any Git repository, preview branches that can be safely deleted:
+
+```
+git-prune-branches --dry-run
+```
+
+By default, the script asks for confirmation before deleting branches and backs up each branch tip locally. See [Git Settings & Configurations](git/README.md#prune-stale-local-branches) for detection rules, safety options, and backup recovery.
