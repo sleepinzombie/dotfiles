@@ -1,27 +1,33 @@
-# Git set up & configurations
+<div align="center">
 
-This directory contains all settings and configurations that are related to the whole Git process.
+# 🌿 Git
 
-## Table of Contents
+**Per-repo identity setup, fork syncing and safe branch pruning.**
 
-- [Git Configurations Setup](#git-configurations-setup)
-- [Usage](#usage)
-- [Sync a Fork with its Upstream](#sync-a-fork-with-its-upstream)
+[Overview](#-overview) · [Git setup](#-git-configurations-setup) · [Sync a fork](#-sync-a-fork-with-its-upstream) · [Prune branches](#-prune-stale-local-branches)
 
-## Git Configurations Setup
+</div>
 
-To establish specific configurations such as name, email, and other Git-related parameters on a per-repository basis, without utilizing the `--global` flag, it is essential to recognize that this process can be cumbersome. Neglecting to undertake this configuration procedure may lead to Git prompting the user to amend the most recent commit subsequent to modifying their credentials.
+---
 
-To obviate such occurrences, a script named `git-setup.sh` has been devised to streamline this process automatically.
+## 📋 Overview
 
-### `git-setup.sh` Script Details
+| Tool | What it does | Installed by |
+| --- | --- | --- |
+| [`git-setup.sh`](git-setup.sh) | Applies your name, email and signing settings to the current repository | `copy-script.sh` (copied to `~`) |
+| [`git-sync-fork.sh`](git-sync-fork.sh) | Fast-forwards your fork with its upstream | Root `setup.sh` / `setup.ps1` |
+| [`git-prune-branches.sh`](git-prune-branches.sh) | Deletes merged or orphaned local branches, with backups | Root `setup.sh` / `setup.ps1` |
 
-The `git-setup.sh` script has been enhanced to:
+## 🪪 Git Configurations Setup
 
-- Conditionally Include Configurations: The script now dynamically includes configurations for `SIGNINGKEY` and `GPG_COMMIT` only if their respective environment variables are set in the `gitconfig.env` file.
-- Remove Empty Lines: After processing, the script removes empty lines to ensure a clean and readable output.
+Setting a name, email and other Git parameters per repository, without the `--global` flag, is tedious. Forgetting it can make Git prompt you to amend the latest commit after you change your credentials. The `git-setup.sh` script does this automatically.
 
-## Usage
+### What `git-setup.sh` does
+
+- Conditionally includes configurations: `SIGNINGKEY` and `GPG_COMMIT` are applied only if they are set in `gitconfig.env`.
+- Removes empty lines after processing, to keep the output clean and readable.
+
+### Usage
 
 #### 1. Clone the Repository
 
@@ -80,7 +86,7 @@ Finally, run the git-setup.sh script in the home directory to set up your Git cr
 
 Once this setup is completed, you can simply run `git-setup.sh` from any repository to configure Git credentials quickly.
 
-## Sync a Fork with its Upstream
+## 🔀 Sync a Fork with its Upstream
 
 `git-sync-fork.sh` syncs the fork of the repository **in your current directory** with its upstream, so only that repository is affected. It is installed as `git-sync-fork` (also usable as `git sync-fork`) by the root `setup.sh` / `setup.ps1`, which also install the required `gh` CLI.
 
@@ -99,7 +105,10 @@ git-sync-fork [--pull] [--checkout] [--branch <name>] [--remote <name>] [--dry-r
 
 Syncing is fast-forward only. It never force-updates or discards local work, and fails if the fork has diverged from upstream. It exits with an error if the repository is not a fork.
 
-## Prune Stale Local Branches
+> [!NOTE]
+> Requires the `gh` CLI, which the root setup installs. Preview with `--dry-run` first.
+
+## 🧹 Prune Stale Local Branches
 
 `git-prune-branches` reviews and optionally deletes stale local branches in the **current repository**. It is installed as `git-prune-branches` (also usable as `git prune-branches`) by the root `setup.sh` / `setup.ps1`.
 
@@ -132,9 +141,22 @@ git-prune-branches --dry-run
 git-prune-branches --yes
 ```
 
-Branches are candidates when their tip is contained in the default branch of the primary or upstream remote (`merged`), a merged PR covers the local tip (`merged-pr`), the tracked remote branch is gone (`remote-gone`), or a PR was closed without merging and covers the local tip (`pr-closed`). GitHub PR checks require an authenticated `gh` CLI; if unavailable or unauthenticated, the script warns and skips those checks. By default, it fetches with pruning first and refuses to continue if fetching fails.
+A branch is a candidate when one of these applies:
 
-The current branch, the default branch, branches checked out in any worktree, `main`, `master`, `develop`, `dev`, `trunk`, and `release/*` are always protected. Branches with an open PR are kept, as are branches whose commits are newer than their closed or merged PR. Review the candidates with `--dry-run` before deletion.
+| Reason | Meaning |
+| --- | --- |
+| `merged` | Its tip is contained in the default branch of the primary or upstream remote |
+| `merged-pr` | A merged PR covers the local tip |
+| `remote-gone` | The tracked remote branch is gone |
+| `pr-closed` | A PR was closed without merging and covers the local tip |
+
+GitHub PR checks require an authenticated `gh` CLI; if unavailable or unauthenticated, the script warns and skips those checks. By default, it fetches with pruning first and refuses to continue if fetching fails.
+
+> [!IMPORTANT]
+> The current branch, the default branch, branches checked out in any worktree, `main`, `master`, `develop`, `dev`, `trunk`, and `release/*` are always protected. Branches with an open PR are kept, as are branches whose commits are newer than their closed or merged PR.
+
+> [!TIP]
+> Review the candidates with `--dry-run` before deleting anything.
 
 Before deleting a candidate, the script saves its tip under `refs/prune-backup/<timestamp>/<branch>` (the ref itself uses about 41 bytes and keeps the commit objects from garbage collection). Backups remain in the local repository's `.git` directory until purged; deletion details are appended to `.git/prune-branches.log`.
 
