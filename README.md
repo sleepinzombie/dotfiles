@@ -21,7 +21,7 @@ As developers, we often find ourselves customizing our development environments 
 
 ### 1. Bootstrap the machine
 
-Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and installs the `git-sync-fork` command into `~/.local/bin`. It is safe to re-run.
+Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and installs the `git-sync-fork` and `git-prune-branches` commands into `~/.local/bin`. It is safe to re-run.
 
 | Platform | Command |
 | --- | --- |

@@ -77,6 +77,15 @@ if ($DryRun) {
 }
 Write-Host "[ ok ] Installed git-sync-fork (also available as: git sync-fork, requires Git Bash)"
 
+$pruneSource = Join-Path $rootDir "git/git-prune-branches.sh"
+$pruneTarget = Join-Path $binDir "git-prune-branches"
+if ($DryRun) {
+    Write-Host "[dry-run] copy $pruneSource -> $pruneTarget"
+} else {
+    Copy-Item -Path $pruneSource -Destination $pruneTarget -Force
+}
+Write-Host "[ ok ] Installed git-prune-branches (also available as: git prune-branches, requires Git Bash)"
+
 # Persist the bin directory on the user PATH (takes effect in new terminals).
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if (($userPath -split ";") -notcontains $binDir) {

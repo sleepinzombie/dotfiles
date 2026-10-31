@@ -98,3 +98,32 @@ git-sync-fork [--pull] [--checkout] [--branch <name>] [--remote <name>] [--dry-r
 | `--dry-run` | Print the commands without running them |
 
 Syncing is fast-forward only. It never force-updates or discards local work, and fails if the fork has diverged from upstream. It exits with an error if the repository is not a fork.
+
+## Prune Stale Local Branches
+
+`git-prune-branches` (installed by `setup.sh` / `setup.ps1`, also usable as `git prune-branches`) deletes local branches in the **current repository** that are no longer needed:
+
+| Reason | Meaning |
+| --- | --- |
+| `merged` | Tip is contained in `<remote>/<default>` or `upstream/<default>` |
+| `merged-pr` | A merged PR (squash/rebase included) has the branch as head, and the local tip is covered by it |
+| `remote-gone` | The tracked remote branch was deleted |
+| `pr-closed` | The branch's PR was closed unmerged (GitHub cannot truly delete PRs) |
+
+Safety: run with `--dry-run` first; deletion asks for confirmation unless `--yes`. It never touches the current branch, the default branch, branches checked out in a worktree, `main/master/develop/dev/trunk/release/*` (add more with `--protect`), branches with an open PR, or branches with commits newer than their closed/merged PR. Each tip is backed up under `refs/prune-backup/<timestamp>/<branch>` first (about 41 bytes per branch; it keeps the commits from garbage collection), and deletions are logged to `.git/prune-branches.log`.
+
+```
+git-prune-branches --dry-run
+git-prune-branches --list-backups
+git-prune-branches --restore <branch>
+```
+
+Backups are kept until you purge them:
+
+```
+git-prune-branches --purge-backups --dry-run          # preview
+git-prune-branches --purge-backups --older-than 30    # only backups 30+ days old
+git-prune-branches --purge-backups --gc               # all, and physically remove the commits now
+```
+
+Without `--gc`, the commits remain recoverable with `git fsck --unreachable` until git's normal garbage collection prunes them. `--gc` runs `git reflog expire --expire-unreachable=now --all` and `git gc --prune=now`, which also discards any other unreachable objects in the repo, so it is irreversible.

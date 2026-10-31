@@ -116,6 +116,9 @@ run mkdir -p "$BIN_DIR"
 run cp "$ROOT_DIR/git/git-sync-fork.sh" "$BIN_DIR/git-sync-fork"
 run chmod +x "$BIN_DIR/git-sync-fork"
 log_ok "Installed git-sync-fork (also available as: git sync-fork)"
+run cp "$ROOT_DIR/git/git-prune-branches.sh" "$BIN_DIR/git-prune-branches"
+run chmod +x "$BIN_DIR/git-prune-branches"
+log_ok "Installed git-prune-branches (also available as: git prune-branches)"
 
 # Only warn: editing shell profiles automatically varies too much per shell.
 case ":$PATH:" in
