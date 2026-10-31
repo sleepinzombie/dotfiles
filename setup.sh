@@ -109,16 +109,38 @@ if [ "$DRY_RUN" = false ] && has_cmd gh; then
   fi
 fi
 
-# Installed without the .sh extension so it can be run as `git-sync-fork`,
-# and as `git sync-fork` since git treats git-* executables on PATH as subcommands.
+# Installed without the .sh extension so Git can expose git-* scripts as
+# subcommands (for example, `git sync-fork`).
+install_command() {
+  local source="$1" target="$2" command_name="$3" alias_name="$4" status
+
+  if [ ! -e "$target" ]; then
+    status="missing; would install"
+  elif cmp -s "$source" "$target"; then
+    status="already up to date"
+    if [ "$DRY_RUN" = true ]; then
+      log_ok "$command_name $status"
+      return
+    fi
+  else
+    status="out of date; would update"
+  fi
+
+  if [ "$DRY_RUN" = true ]; then
+    log_info "$command_name $status"
+    printf '[dry-run] cp %s %s\n' "$source" "$target"
+    printf '[dry-run] chmod +x %s\n' "$target"
+  else
+    mkdir -p "$BIN_DIR"
+    cp "$source" "$target"
+    chmod +x "$target"
+    log_ok "Installed $command_name (also available as: git $alias_name)"
+  fi
+}
+
 log_info "Installing commands into $BIN_DIR"
-run mkdir -p "$BIN_DIR"
-run cp "$ROOT_DIR/git/git-sync-fork.sh" "$BIN_DIR/git-sync-fork"
-run chmod +x "$BIN_DIR/git-sync-fork"
-log_ok "Installed git-sync-fork (also available as: git sync-fork)"
-run cp "$ROOT_DIR/git/git-prune-branches.sh" "$BIN_DIR/git-prune-branches"
-run chmod +x "$BIN_DIR/git-prune-branches"
-log_ok "Installed git-prune-branches (also available as: git prune-branches)"
+install_command "$ROOT_DIR/git/git-sync-fork.sh" "$BIN_DIR/git-sync-fork" "git-sync-fork" "sync-fork"
+install_command "$ROOT_DIR/git/git-prune-branches.sh" "$BIN_DIR/git-prune-branches" "git-prune-branches" "prune-branches"
 
 # Only warn: editing shell profiles automatically varies too much per shell.
 case ":$PATH:" in

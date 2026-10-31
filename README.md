@@ -21,16 +21,20 @@ As developers, we often find ourselves customizing our development environments 
 
 ### 1. Bootstrap the machine
 
-Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and installs the `git-sync-fork` and `git-prune-branches` commands into `~/.local/bin`. It is safe to re-run.
+Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and copies the `git-sync-fork` and `git-prune-branches` commands from this checkout into `~/.local/bin`. It is safe to re-run.
 
 | Platform | Command |
 | --- | --- |
 | macOS / Linux / Git Bash | `./setup.sh` |
 | Windows (PowerShell) | `./setup.ps1` |
 
-Pass `--dry-run` (`-DryRun` for PowerShell) to preview without changing anything. Supported package managers: Homebrew, apt, dnf, pacman and winget.
+Pass `--dry-run` (`-DryRun` for PowerShell) to preview without changing anything. The preview reports whether each command is missing, out of date, or already up to date. Supported package managers: Homebrew, apt, dnf, pacman and winget.
 
-### 2. Sync a fork
+### 2. Update installed commands
+
+After updating this dotfiles checkout, rerun the setup command above to copy its latest scripts into `~/.local/bin`. Use its dry-run option first to see which commands are missing or out of date; setup reports commands that are already up to date too. This updates the installed commands without changing your other project checkouts.
+
+### 3. Sync a fork
 
 From inside any cloned fork:
 
@@ -42,7 +46,7 @@ git-sync-fork --checkout   # ...switch to the default branch first (implies --pu
 
 See [Git Settings & Configurations](git/README.md#sync-a-fork-with-its-upstream) for details.
 
-### 3. Prune stale local branches
+### 4. Prune stale local branches
 
 From inside any Git repository, preview branches that can be safely deleted:
 

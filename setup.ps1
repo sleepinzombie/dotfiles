@@ -64,27 +64,48 @@ if (-not $DryRun -and (Test-CommandExists "gh")) {
     }
 }
 
+function Install-CommandScript {
+    param(
+        [Parameter(Mandatory = $true)][string]$Source,
+        [Parameter(Mandatory = $true)][string]$Target,
+        [Parameter(Mandatory = $true)][string]$CommandName,
+        [Parameter(Mandatory = $true)][string]$AliasName
+    )
+
+    if (-not (Test-Path -LiteralPath $Target -PathType Leaf)) {
+        $status = "missing; would install"
+    } elseif ((Get-FileHash -LiteralPath $Source).Hash -eq (Get-FileHash -LiteralPath $Target).Hash) {
+        $status = "already up to date"
+        if ($DryRun) {
+            Write-Host "[ ok ] $CommandName $status"
+            return
+        }
+    } else {
+        $status = "out of date; would update"
+    }
+
+    if ($DryRun) {
+        Write-Host "[info] $CommandName $status"
+        Write-Host "[dry-run] copy $Source -> $Target"
+    } else {
+        New-Item -ItemType Directory -Path $binDir -Force | Out-Null
+        Copy-Item -LiteralPath $Source -Destination $Target -Force
+        Write-Host "[ ok ] Installed $CommandName (also available as: git $AliasName, requires Git Bash)"
+    }
+}
+
 Write-Host "[info] Installing commands into $binDir"
-# Copied without the .sh extension so Git for Windows exposes it as `git sync-fork`.
-$source = Join-Path $rootDir "git/git-sync-fork.sh"
-$target = Join-Path $binDir "git-sync-fork"
-
-if ($DryRun) {
-    Write-Host "[dry-run] copy $source -> $target"
-} else {
-    New-Item -ItemType Directory -Path $binDir -Force | Out-Null
-    Copy-Item -Path $source -Destination $target -Force
-}
-Write-Host "[ ok ] Installed git-sync-fork (also available as: git sync-fork, requires Git Bash)"
-
-$pruneSource = Join-Path $rootDir "git/git-prune-branches.sh"
-$pruneTarget = Join-Path $binDir "git-prune-branches"
-if ($DryRun) {
-    Write-Host "[dry-run] copy $pruneSource -> $pruneTarget"
-} else {
-    Copy-Item -Path $pruneSource -Destination $pruneTarget -Force
-}
-Write-Host "[ ok ] Installed git-prune-branches (also available as: git prune-branches, requires Git Bash)"
+# Copied without the .sh extension so Git for Windows exposes them as Git commands.
+Install-CommandScript `
+    -Source (Join-Path $rootDir "git/git-sync-fork.sh") `
+    -Target (Join-Path $binDir "git-sync-fork") `
+    -CommandName "git-sync-fork" `
+    -AliasName "sync-fork"
+Install-CommandScript `
+    -Source (Join-Path $rootDir "git/git-prune-branches.sh") `
+    -Target (Join-Path $binDir "git-prune-branches") `
+    -CommandName "git-prune-branches" `
+    -AliasName "prune-branches"
 
 # Persist the bin directory on the user PATH (takes effect in new terminals).
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
