@@ -32,7 +32,7 @@ That installs `git` and the GitHub CLI, signs you in to `gh`, and puts the comma
 
 | | Area | What you get |
 | --- | --- | --- |
-| 🧩 | [VS Code](vscode/README.md) | Settings, fonts and an auto-synced extensions list |
+| 🧩 | [VS Code](vscode/README.md) | Settings backup, fonts and an extensions list |
 | 🌿 | [Git](git/README.md) | Per-repo identity setup, fork syncing and safe branch pruning |
 | 🪟 | [Windows SSH](powershell/setup-github-ssh/README.md) | GitHub SSH access and commit signing bootstrap |
 
@@ -59,6 +59,9 @@ flowchart LR
     D --> G[vscode-sync-extensions]
     G -->|writes| H[(vscode/extensions.txt)]
     H -->|--install on a new device| I[VS Code extensions]
+    D --> J[vscode-sync-settings]
+    L[VS Code settings] -->|manual backup| J
+    J -->|copies| K[(vscode/settings.json)]
 ```
 
 ---
