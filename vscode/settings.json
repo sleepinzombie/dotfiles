@@ -8,21 +8,21 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "apc.electron": {
-    "vibrancy": "ultra-dark",
-    "frame": true,
-    "backgroundColor": "#2A2E3D",
-    "transparent": true,
-    "trafficLightPosition": {
-      "x": 15,
-      "y": 13
-    }
-  },
-  "apc.stylesheet": {
-    "*": "font-family: 'Cascadia code','Fira Code', Consolas, 'Courier New', monospace",
-    ".editor .title": "background-color: transparent !important;",
-    ".editor .title .actions-container": "flex-direction: row-reverse;"
-  },
+  // "apc.electron": {
+  //   "vibrancy": "ultra-dark",
+  //   "frame": true,
+  //   "backgroundColor": "#2A2E3D",
+  //   "transparent": true,
+  //   "trafficLightPosition": {
+  //     "x": 15,
+  //     "y": 13
+  //   }
+  // },
+  // "apc.stylesheet": {
+  //   "*": "font-family: 'Cascadia code','Fira Code', Consolas, 'Courier New', monospace",
+  //   ".editor .title": "background-color: transparent !important;",
+  //   ".editor .title .actions-container": "flex-direction: row-reverse;"
+  // },
   "diffEditor.experimental.showMoves": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
   "diffEditor.ignoreTrimWhitespace": false,
@@ -44,7 +44,6 @@
   "editor.formatOnType": true,
   "editor.guides.bracketPairs": true,
   "editor.guides.bracketPairsHorizontal": false,
-  "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.inlineSuggest.enabled": true,
   "editor.scrollbar.horizontalScrollbarSize": 10,
   "editor.scrollbar.verticalScrollbarSize": 8,
@@ -82,11 +81,6 @@
   ],
   "intelephense.format.enable": false,
   "javascript.inlayHints.enumMemberValues.enabled": true,
-  "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
-  "javascript.inlayHints.parameterNames.enabled": "all",
-  "javascript.inlayHints.parameterTypes.enabled": true,
-  "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
-  "javascript.inlayHints.variableTypes.enabled": true,
   "javascript.referencesCodeLens.enabled": true,
   "javascript.referencesCodeLens.showOnAllFunctions": true,
   "liveServer.settings.donotShowInfoMsg": true,
@@ -101,7 +95,10 @@
   "nasc-touchbar.showReferences": true,
   "nasc-touchbar.togglePanel": false,
   "php.suggest.basic": false,
-  "settingsSync.ignoredSettings": ["-window.zoomLevel"],
+  "settingsSync.ignoredSettings": [
+    "-window.zoomLevel",
+    "todo-tree.ripgrep.ripgrep"
+  ],
   "terminal.integrated.fontFamily": "'Fira Code', MesloLGS NF",
   "todo-tree.general.tags": [
     "BUG",
@@ -115,12 +112,6 @@
   "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
   "typescript.implementationsCodeLens.enabled": true,
   "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
-  "typescript.inlayHints.enumMemberValues.enabled": true,
-  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
-  "typescript.inlayHints.parameterNames.enabled": "all",
-  "typescript.inlayHints.parameterTypes.enabled": true,
-  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
-  "typescript.inlayHints.variableTypes.enabled": true,
   "typescript.referencesCodeLens.enabled": true,
   "typescript.referencesCodeLens.showOnAllFunctions": true,
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -136,16 +127,57 @@
       "selection.background": "#1a722d",
       "titleBar.activeBackground": "#001807",
       "titleBar.activeForeground": "#d4d4d4"
+    },
+    "[One Dark Pro Night Flat]": {
+      "activityBar.activeBorder": "#01912c",
+      "editorHoverWidget.highlightForeground": "#18A2FF",
+      "list.focusBackground": "#1a722d",
+      "list.hoverBackground": "#004e1e",
+      "selection.background": "#1a722d",
+      "titleBar.activeBackground": "#001807",
+      "titleBar.activeForeground": "#d4d4d4",
+      "sideBar.border": "#1e22279c"
     }
   },
-  "workbench.colorTheme": "One Dark Pro Darker",
   "workbench.editor.pinnedTabSizing": "compact",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.list.smoothScrolling": true,
-  "workbench.preferredDarkColorTheme": "One Dark Pro Darker",
-  "workbench.preferredLightColorTheme": "Bluloco Light Italic",
   "workbench.productIconTheme": "material-product-icons",
   "workbench.startupEditor": "welcomePage",
   "workbench.statusBar.visible": true,
-  "workbench.tree.indent": 6
+  "workbench.tree.indent": 6,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "github.copilot.chat.agent.currentEditorContext.enabled": true,
+  "workbench.secondarySideBar.showLabels": false,
+  "workbench.panel.showLabels": false,
+  "editor.hover.enabled": "on",
+  "editor.hover.sticky": true,
+  "editor.parameterHints.enabled": true,
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
+  },
+  "editor.suggest.showInlineDetails": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "gitlens.views.scm.grouped.views": {
+    "commits": true,
+    "branches": true,
+    "remotes": true,
+    "stashes": false,
+    "tags": true,
+    "worktrees": true,
+    "contributors": true,
+    "fileHistory": false,
+    "repositories": true,
+    "searchAndCompare": false,
+    "launchpad": false
+  },
+  "workbench.colorTheme": "One Dark Pro Night Flat",
+  "todo-tree.ripgrep.ripgrep": "/opt/homebrew/bin/rg",
+  // "todo-tree.ripgrep.ripgrep": "/Applications/Visual Studio Code.app/Contents/Resources/app/node_modules/@vscode/ripgrep-universal/bin/darwin-arm64/rg",
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.disableLoginPrompt": true,
+  "chat.viewSessions.orientation": "stacked",
+  "gitlens.graph.layout": "editor"
 }
