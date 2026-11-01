@@ -146,6 +146,10 @@ Install-CommandWrapper `
     -Script (Join-Path $rootDir "vscode/sync-extensions.sh") `
     -Target (Join-Path $binDir "vscode-sync-extensions") `
     -CommandName "vscode-sync-extensions"
+Install-CommandWrapper `
+    -Script (Join-Path $rootDir "vscode/sync-settings.sh") `
+    -Target (Join-Path $binDir "vscode-sync-settings") `
+    -CommandName "vscode-sync-settings"
 
 # Persist the bin directory on the user PATH (takes effect in new terminals).
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")

@@ -45,6 +45,7 @@ Installed into `~/.local/bin` by the setup script:
 | `git-sync-fork` | Fast-forward your fork with its upstream, run from inside the fork |
 | `git-prune-branches` | Delete merged or orphaned local branches, with recoverable backups |
 | `vscode-sync-extensions` | Keep `vscode/extensions.txt` in sync with the extensions you have installed |
+| `vscode-sync-settings` | Back up your VS Code `settings.json` into `vscode/settings.json` |
 
 ## 🔍 How it works
 
@@ -66,7 +67,7 @@ flowchart LR
 
 ### 1. Bootstrap the machine
 
-Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and copies the `git-sync-fork` and `git-prune-branches` commands from this checkout into `~/.local/bin`, along with a `vscode-sync-extensions` wrapper that runs the script in this checkout. It is safe to re-run.
+Installs `git` and the GitHub CLI (`gh`), signs you in to `gh` if needed, and copies the `git-sync-fork` and `git-prune-branches` commands from this checkout into `~/.local/bin`, along with `vscode-sync-extensions` and `vscode-sync-settings` wrappers that run the scripts in this checkout. It is safe to re-run.
 
 | Platform | Command |
 | --- | --- |
@@ -111,3 +112,12 @@ vscode-sync-extensions             # update extensions.txt
 ```
 
 See [VS Code Extensions and Settings](vscode/README.md#sync-extensions) for all options, including installing on a new device.
+
+To back up your VS Code `settings.json` the same way (manual, one-way, never committed for you):
+
+```
+vscode-sync-settings --dry-run   # preview the changes
+vscode-sync-settings             # update vscode/settings.json
+```
+
+See [Back up settings](vscode/README.md#-back-up-settings) for all options.

@@ -4,7 +4,7 @@
 
 **My editor settings, fonts and extensions, ready to bring to a new machine.**
 
-[Overview](#-overview) · [Quick start](#-quick-start) · [Sync extensions](#-sync-extensions) · [Fonts](#-fonts)
+[Overview](#-overview) · [Quick start](#-quick-start) · [Sync extensions](#-sync-extensions) · [Back up settings](#-back-up-settings) · [Fonts](#-fonts)
 
 </div>
 
@@ -17,6 +17,7 @@
 | [`settings.json`](settings.json) | Editor, terminal and theme settings |
 | [`extensions.txt`](extensions.txt) | The installed extensions, one ID per line (generated, don't edit by hand) |
 | [`sync-extensions.sh`](sync-extensions.sh) | Keeps `extensions.txt` in sync with VS Code, and installs from it |
+| [`sync-settings.sh`](sync-settings.sh) | Backs up your VS Code `settings.json` into this folder |
 
 > [!IMPORTANT]
 > Install the extensions and [fonts](#-fonts) before using `settings.json`, otherwise the themes and fonts it references won't be found.
@@ -30,7 +31,7 @@ vscode-sync-extensions --install --dry-run   # preview what would be installed
 vscode-sync-extensions --install
 ```
 
-Then copy [`settings.json`](settings.json) into your VS Code user settings.
+Then copy [`settings.json`](settings.json) into your VS Code user settings (or just sign in to Settings Sync).
 
 ## 🔄 Sync Extensions
 
@@ -71,6 +72,27 @@ IDs are stored lowercase and sorted, one per line, so diffs only show real chang
 > Always preview with `--dry-run` first. Review the diff before committing; the script never commits.
 
 Installing only adds missing extensions and never removes any. It continues past failures and exits with an error listing how many failed. The script refuses to run if VS Code reports no extensions, so an empty list can't overwrite the file.
+
+## 💾 Back up settings
+
+VS Code's Settings Sync (GitHub or Microsoft account) stays the real sync. [`settings.json`](settings.json) is only a reference backup, and it is updated manually: `vscode-sync-settings` copies your VS Code user `settings.json` here, never the other way round, and never commits.
+
+```
+vscode-sync-settings [--check] [--dry-run] [--profile <name>] [--file <path>]
+```
+
+| Option | Effect |
+| --- | --- |
+| _(none)_ | Overwrite `settings.json` with your VS Code settings, then show the diff stat |
+| `--check` | Change nothing; exit 1 and print the differences if the backup is out of date |
+| `--dry-run` | Show what would change without writing anything |
+| `--profile <name>` | Back up this VS Code profile instead; the default file becomes `settings.<name>.json` |
+| `--file <path>` | Use a different file in the repo |
+
+The file is copied as is (it is JSONC, so it is not reformatted). Comparisons ignore formatting (trailing commas, whitespace, blank lines), so a formatter like Prettier on the repo copy doesn't make it look out of date; only real setting changes do. Set `VSCODE_USER_DIR` to override the detected VS Code `User` directory (macOS, Linux, and Windows via Git Bash).
+
+> [!WARNING]
+> Review the diff before committing: settings can contain machine specific paths or sensitive values.
 
 ## 🔤 Fonts
 

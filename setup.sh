@@ -173,6 +173,7 @@ log_info "Installing commands into $BIN_DIR"
 install_command "$ROOT_DIR/git/git-sync-fork.sh" "$BIN_DIR/git-sync-fork" "git-sync-fork" "sync-fork"
 install_command "$ROOT_DIR/git/git-prune-branches.sh" "$BIN_DIR/git-prune-branches" "git-prune-branches" "prune-branches"
 install_wrapper "$ROOT_DIR/vscode/sync-extensions.sh" "$BIN_DIR/vscode-sync-extensions" "vscode-sync-extensions"
+install_wrapper "$ROOT_DIR/vscode/sync-settings.sh" "$BIN_DIR/vscode-sync-settings" "vscode-sync-settings"
 
 # Only warn: editing shell profiles automatically varies too much per shell.
 case ":$PATH:" in
